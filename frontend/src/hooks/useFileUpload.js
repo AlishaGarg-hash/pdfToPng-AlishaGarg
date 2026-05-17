@@ -22,39 +22,58 @@ export const useFileUpload = (validateFile) => {
     };
   }, [previewUrl]);
 
-  const handleClear = useCallback((e) => {
-    if (e) e.stopPropagation();
-    setFile(null);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    setStatusMessage("");
-  }, [previewUrl]);
-
-  const processFile = useCallback(async (selectedFile) => {
-    if (!selectedFile) return;
-
-    const validation = await validateFile(selectedFile);
-    if (validation.isValid) {
-      setFile(selectedFile);
-      if (selectedFile.type.startsWith("image/")) {
-        // Revoke old URL if it exists
-        if (previewUrl) URL.revokeObjectURL(previewUrl);
-        const url = URL.createObjectURL(selectedFile);
-        setPreviewUrl(url);
-      } else {
+  const handleClear = useCallback(
+    (e) => {
+      if (e) e.stopPropagation();
+      setFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
         setPreviewUrl(null);
       }
-      setStatusMessage(validation.message || `File "${selectedFile.name}" selected`);
-    } else {
-      setStatusMessage(validation.message || "Error: Invalid file type");
-      setTimeout(() => setStatusMessage(""), 3000);
-    }
-  }, [validateFile, previewUrl]);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      setStatusMessage("");
+    },
+    [previewUrl],
+  );
+
+  const processFile = useCallback(
+    async (selectedFile) => {
+      if (!selectedFile) return;
+      const validation = await validateFile(selectedFile);
+      if (validation.isValid) {
+        setFile(selectedFile);
+
+        // Images: create object URL preview immediately.
+        if (selectedFile.type.startsWith("image/")) {
+          if (previewUrl) URL.revokeObjectURL(previewUrl);
+          const url = URL.createObjectURL(selectedFile);
+          setPreviewUrl(url);
+          setStatusMessage(
+            validation.message || `File "${selectedFile.name}" selected`,
+          );
+        } else if (selectedFile.type === "application/pdf") {
+          // PDFs: use object URL preview (keep original embed appearance). Simple and fast.
+          if (previewUrl) URL.revokeObjectURL(previewUrl);
+          const url = URL.createObjectURL(selectedFile);
+          setPreviewUrl(url);
+          setStatusMessage(
+            validation.message || `File "${selectedFile.name}" selected`,
+          );
+        } else {
+          setPreviewUrl(null);
+          setStatusMessage(
+            validation.message || `File "${selectedFile.name}" selected`,
+          );
+        }
+      } else {
+        setStatusMessage(validation.message || "Error: Invalid file type");
+        setTimeout(() => setStatusMessage(""), 3000);
+      }
+    },
+    [validateFile, previewUrl],
+  );
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -81,16 +100,19 @@ export const useFileUpload = (validateFile) => {
     }
   };
 
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      processFile(e.dataTransfer.files[0]);
-      e.dataTransfer.clearData();
-    }
-  }, [processFile]);
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processFile(e.dataTransfer.files[0]);
+        e.dataTransfer.clearData();
+      }
+    },
+    [processFile],
+  );
 
   const handleAreaClick = (e) => {
     // Prevent triggering when clicking on the label/X button
@@ -105,11 +127,15 @@ export const useFileUpload = (validateFile) => {
   };
 
   return {
-    file, setFile,
-    loading, setLoading,
+    file,
+    setFile,
+    loading,
+    setLoading,
     isDragging,
-    statusMessage, setStatusMessage,
+    statusMessage,
+    setStatusMessage,
     previewUrl,
+    setPreviewUrl,
     fileInputRef,
     dropAreaRef,
     handleFileChange,
@@ -119,6 +145,6 @@ export const useFileUpload = (validateFile) => {
     handleDragLeave,
     handleDrop,
     handleAreaClick,
-    processFile
+    processFile,
   };
 };
