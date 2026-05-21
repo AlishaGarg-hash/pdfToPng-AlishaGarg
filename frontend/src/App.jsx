@@ -12,27 +12,30 @@ import ImageResize from "./pages/ImageResize";
 import ImageUpscale from "./pages/ImageUpscale";
 import ImageDpi from "./pages/ImageDpi";
 import ImageMetadata from "./pages/ImageMetadata";
+import ErrorBoundary from "./ErrorBoundary";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} /> 
+    <ErrorBoundary>
+      <Routes>
+        <Route path="/" element={<LandingPage />} /> 
 
-      {/* All tools share the Layout with the Sidebar */}
-      <Route element={<Layout />}>
-      
-        <Route path="/pdf-to-png" element={<PdfPng />} />
-        <Route path="/image-to-webp" element={<ImageWebp />} />
-        <Route path="/image-to-jpg" element={<ImageJpg />} />
-        <Route path="/remove-bg" element={<RemoveBg />} />
-        <Route path="/rotate-flip" element={<RotateFlip />} />
-        <Route path="/image-compress" element={<ImageCompress />} />
-        <Route path="/image-resize" element={<ImageResize />} />
-        <Route path="/image-upscale" element={<ImageUpscale />} />
-        <Route path="/image-dpi" element={<ImageDpi />} />
-        <Route path="/image-metadata" element={<ImageMetadata />} />
-      </Route>
-    </Routes>
+        {/* All tools share the Layout with the Sidebar */}
+        <Route element={<Layout />}>
+        
+          <Route path="/pdf-to-png" element={<PdfPng />} />
+          <Route path="/image-to-webp" element={<ImageWebp />} />
+          <Route path="/image-to-jpg" element={<ImageJpg />} />
+          <Route path="/remove-bg" element={<RemoveBg />} />
+          <Route path="/rotate-flip" element={<RotateFlip />} />
+          <Route path="/image-compress" element={<ImageCompress />} />
+          <Route path="/image-resize" element={<ImageResize />} />
+          <Route path="/image-upscale" element={<ImageUpscale />} />
+          <Route path="/image-dpi" element={<ImageDpi />} />
+          <Route path="/image-metadata" element={<ImageMetadata />} />
+        </Route>
+      </Routes>
+    </ErrorBoundary>
   );
 }
 
