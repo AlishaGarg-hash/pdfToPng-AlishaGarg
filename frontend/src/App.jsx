@@ -1,5 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
+import ScrollToTop from "./components/ScrollToTop";
+
+// ...
+
 
 import PdfMerge from "./pages/PdfMerge";
 import PdfSign from "./pages/PdfSign";
@@ -8,6 +12,7 @@ import LandingPage from "./pages/LandingPage";
 import ImagePdf from "./pages/ImagePdf";
 import PdfPng from "./pages/PdfPng";
 import PdfDocx from "./pages/PdfDocx";
+import DocxPdf from "./pages/DocxPdf";
 import ImageWebp from "./pages/ImageWbp";
 import ImageJpg from "./pages/ImageJpg";
 import ImageWatermark from "./pages/ImageWatermark";
@@ -27,6 +32,7 @@ import ErrorBoundary from "./ErrorBoundary";
 function App() {
   return (
     <ErrorBoundary>
+      <ScrollToTop />
       <Routes>
         {/* The Landing Page has its own clean view */}
         <Route path="/" element={<LandingPage />} />
@@ -35,6 +41,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/pdf-to-png" element={<PdfPng />} />
           <Route path="/pdf-to-word" element={<PdfDocx />} />
+          <Route path="/docx-to-pdf" element={<DocxPdf />} />
           <Route path="/image-to-pdf" element={<ImagePdf />} />
           <Route path="/pdf-merge" element={<PdfMerge />} />
           <Route path="/pdf-sign" element={<PdfSign />} />
