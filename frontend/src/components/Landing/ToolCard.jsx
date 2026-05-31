@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Image } from "lucide-react";
 import "./ToolCard.css";
 
 const pdfWatermarkAnimation = (
@@ -553,6 +553,13 @@ const toolAnimations = {
   "pdf-watermark": pdfWatermarkAnimation,
 
   "image-watermark": imageWatermarkAnimation,
+  "image-blur": (
+    <div className="tc-scene tc-blur-scene flex items-center justify-center">
+      <div className="tc-blur-image w-[54px] h-[40px] rounded-[8px] bg-[#E6F1FB] border border-[#85B7EB] flex items-center justify-center">
+        <Image />
+      </div>
+    </div>
+  ),
 };
 
 const ToolCard = ({ tool, index }) => (
